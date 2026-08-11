@@ -1,91 +1,3 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const visibleInput = document.querySelector(
-        '[data-guide-search="input"]'
-    );
-
-    const tokenInputs = Array.from(
-        document.querySelectorAll(".guide-search-token")
-    );
-
-    if (!visibleInput) {
-        console.warn(
-            'Guide search could not find [data-guide-search="input"].'
-        );
-        return;
-    }
-
-    if (!tokenInputs.length) {
-        console.warn(
-            "Guide search could not find any .guide-search-token inputs."
-        );
-        return;
-    }
-
-    let debounceTimer;
-
-    function normaliseSearchWords(value) {
-        return value
-            .toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "")
-            .replace(/[^\p{L}\p{N}]+/gu, " ")
-            .trim()
-            .split(/\s+/)
-            .filter(Boolean)
-            .filter(function (word, index, words) {
-                return words.indexOf(word) === index;
-            })
-            .slice(0, tokenInputs.length);
-    }
-
-    function updateSearch() {
-        const words = normaliseSearchWords(visibleInput.value);
-
-        tokenInputs.forEach(function (input, index) {
-            const nextValue = words[index] || "";
-
-            if (input.value === nextValue) {
-                return;
-            }
-
-            input.value = nextValue;
-
-            input.dispatchEvent(
-                new Event("input", {
-                    bubbles: true
-                })
-            );
-
-            input.dispatchEvent(
-                new Event("change", {
-                    bubbles: true
-                })
-            );
-        });
-    }
-
-    visibleInput.addEventListener("input", function () {
-        window.clearTimeout(debounceTimer);
-
-        debounceTimer = window.setTimeout(function () {
-            updateSearch();
-        }, 150);
-    });
-
-    visibleInput.addEventListener("keydown", function (event) {
-        if (event.key === "Enter") {
-            event.preventDefault();
-            window.clearTimeout(debounceTimer);
-            updateSearch();
-        }
-    });
-
-    if (visibleInput.value.trim()) {
-        updateSearch();
-    }
-});
-
-
 (() => {
     const ITEM_SEL = '.faq-l1-item';
     const HEADER_SEL = ':scope > .faq-l1-header';
@@ -185,6 +97,135 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+// API guide search
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.querySelector('#guides-search');
+    const results = document.querySelector('.guides-search-results');
+    const tree = document.querySelector('.guides-tree');
+
+    if (!input || !results || !tree) return;
+
+    let debounceTimer;
+    let currentRequest;
+
+    function showTree() {
+        results.innerHTML = '';
+        results.style.display = 'none';
+        tree.style.display = 'block';
+    }
+
+    function showLoading() {
+        tree.style.display = 'none';
+        results.style.display = 'block';
+        results.innerHTML = '<div>Searching...</div>';
+    }
+
+    function showError() {
+        tree.style.display = 'none';
+        results.style.display = 'block';
+        results.innerHTML = '<div>Unable to search guides.</div>';
+    }
+
+    function renderResults(items) {
+        tree.style.display = 'none';
+        results.style.display = 'block';
+        results.innerHTML = '';
+
+        if (!items.length) {
+            results.innerHTML = '<div>No guides found.</div>';
+            return;
+        }
+
+        items.forEach((item) => {
+            const outerDiv = document.createElement('div');
+            outerDiv.className = 'guide-search-results w-dyn-item';
+            outerDiv.role = 'listitem';
+
+            const link = document.createElement('a');
+            link.href = `/guides/${item.id}`;
+            link.className = 'guide-link-div w-inline-block';
+
+            const title = document.createElement('div');
+            title.className = 'guide-search-result-title';
+            title.textContent = item.name || '';
+
+            link.appendChild(title);
+            outerDiv.appendChild(link);
+            results.appendChild(outerDiv);
+        });
+    }
+
+    async function searchGuides(query) {
+        currentRequest?.abort();
+
+        currentRequest = new AbortController();
+
+        showLoading();
+
+        try {
+            const response = await fetch(
+                `https://halo.haloservicedesk.com/api/KBArticle?isportal=true&search=${encodeURIComponent(query)}&pageinate=true&page_size=15&page_no=1`,
+                {
+                    signal: currentRequest.signal,
+                    headers: {
+                        Accept: 'application/json'
+                    }
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error(`Search failed: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            renderResults(data.articles || []);
+        } catch (error) {
+            if (error.name === 'AbortError') return;
+
+            console.error('[Guide Search]', error);
+            showError();
+        }
+    }
+
+    function handleSearch() {
+        const query = input.value.trim();
+
+        clearTimeout(debounceTimer);
+
+        if (!query) {
+            currentRequest?.abort();
+            showTree();
+            return;
+        }
+
+        debounceTimer = setTimeout(() => {
+            searchGuides(query);
+        }, 300);
+    }
+
+    input.addEventListener('input', handleSearch);
+    input.addEventListener('search', handleSearch);
+
+    input.addEventListener('keydown', (event) => {
+        if (event.key !== 'Enter') return;
+
+        event.preventDefault();
+        clearTimeout(debounceTimer);
+
+        const query = input.value.trim();
+
+        if (query) {
+            searchGuides(query);
+        }
+    });
+
+    if (input.value.trim()) {
+        searchGuides(input.value.trim());
+    } else {
+        showTree();
+    }
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     const input = document.querySelector('#guides-search');
