@@ -136,6 +136,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Confirm guides belong to a synced FAQ list
+        const availbleFaqLists = getAvailableFaqs();
+        console.log("Available FAQS:", availbleFaqLists);
+
         items.forEach((item) => {
             const outerDiv = document.createElement('div');
             outerDiv.className = 'guide-search-results w-dyn-item';
@@ -157,21 +161,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function searchGuides(query) {
         currentRequest?.abort();
-
         currentRequest = new AbortController();
-
         showLoading();
 
+        const url = new URL("/api/kbarticle", "https://halo.haloservicedesk.com");
+        url.searchParams.set("search", query);
+        url.searchParams.set("isportal", "true");
+        url.searchParams.set("pageinate", "true");
+        url.searchParams.set("page_size", "10");
+        url.searchParams.set("page_no", "1");
+
         try {
-            const response = await fetch(
-                `https://halo.haloservicedesk.com/api/KBArticle?isportal=true&search=${encodeURIComponent(query)}&pageinate=true&page_size=15&page_no=1`,
-                {
-                    signal: currentRequest.signal,
-                    headers: {
-                        Accept: 'application/json'
-                    }
+            const response = await fetch(url, {
+                signal: currentRequest.signal,
+                headers: {
+                    Accept: 'application/json'
                 }
-            );
+            });
 
             if (!response.ok) {
                 throw new Error(`Search failed: ${response.status}`);
@@ -1419,3 +1425,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// #region Helpers
+
+function getAvailableFaqs() {
+    return Array
+        .from(document.querySelectorAll('.guides-tree a[fs-list-element="item-link"][href^="/faq/"]'))
+        .map(link => { return link.pathname.split('/').pop(); });
+}
+
+// #endregion
