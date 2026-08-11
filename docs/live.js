@@ -136,9 +136,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Confirm guides belong to a synced FAQ list
-        const availbleFaqLists = getAvailableFaqs();
-        console.log("Available FAQS:", availbleFaqLists);
+        const availableFaqLists = getAvailableFaqs();
+        const validatedGuides = items.filter(guide => {
+            guide.faqliststr?.split(",").some(faqId => {
+                availableFaqLists.has(String(faqId))
+            });
+        });
 
         items.forEach((item) => {
             const outerDiv = document.createElement('div');
@@ -170,6 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         url.searchParams.set("pageinate", "true");
         url.searchParams.set("page_size", "10");
         url.searchParams.set("page_no", "1");
+        url.searchParams.set("includefaqliststr", "true");
 
         try {
             const response = await fetch(url, {
@@ -1429,9 +1433,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // #region Helpers
 
 function getAvailableFaqs() {
-    return Array
+    return new Set(Array
         .from(document.querySelectorAll('.guides-tree a[fs-list-element="item-link"][href^="/faq/"]'))
-        .map(link => { return link.pathname.split('/').pop(); });
+        .map(link => { return link.pathname.split('/').pop(); }));
 }
 
 // #endregion
