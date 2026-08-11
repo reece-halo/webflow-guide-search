@@ -145,6 +145,14 @@ document.addEventListener('DOMContentLoaded', () => {
             )
         );
 
+        // This is to handle also being excluded from search because it is a stop word
+        if (query.startsWith("also")) {
+            validatedGuides.push({
+                id: 2384,
+                name: "ALSO Integration"
+            });
+        }
+
         validatedGuides.forEach((item) => {
             const outerDiv = document.createElement('div');
             outerDiv.className = 'guide-search-results w-dyn-item';
