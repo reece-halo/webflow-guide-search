@@ -19,11 +19,11 @@ Custom code:
 
 <link
     rel="stylesheet"
-    href="https://reece-halo.github.io/webflow-guide-search/v1.css"
+    href="https://reece-halo.github.io/webflow-guide-search/live.css"
 />
 
 <script
-    src="https://reece-halo.github.io/webflow-guide-search/v1.js"
+    src="https://reece-halo.github.io/webflow-guide-search/live.js"
     defer
 ></script>
 ```
