@@ -1,4 +1,4 @@
-This is hosted with GitHub pages and linked to Webflow in the custom code section.
+This is hosted with GitHub pages and linked to Webflow in the before body custom code section.
 
 The repo has to be public but everything in the `/docs` folder is what's published on the CDN.
 
