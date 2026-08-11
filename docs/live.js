@@ -136,14 +136,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const availableFaqLists = getAvailableFaqs();
+        const availableFaqListIds = getAvailableFaqIds();
         const validatedGuides = items.filter(guide => {
-            guide.faqliststr?.split(",").some(faqId => {
-                availableFaqLists.has(String(faqId))
+            guide.faqlists?.some(faq => {
+                availableFaqListIds.has(String(faq.id))
             });
         });
 
-        items.forEach((item) => {
+        validatedGuides.forEach((item) => {
             const outerDiv = document.createElement('div');
             outerDiv.className = 'guide-search-results w-dyn-item';
             outerDiv.role = 'listitem';
@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         url.searchParams.set("pageinate", "true");
         url.searchParams.set("page_size", "10");
         url.searchParams.set("page_no", "1");
-        url.searchParams.set("includefaqliststr", "true");
+        url.searchParams.set("includefaqlists", "true");
 
         try {
             const response = await fetch(url, {
@@ -1432,7 +1432,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // #region Helpers
 
-function getAvailableFaqs() {
+function getAvailableFaqIds() {
     return new Set(Array
         .from(document.querySelectorAll('.guides-tree a[fs-list-element="item-link"][href^="/faq/"]'))
         .map(link => { return link.pathname.split('/').pop(); }));
