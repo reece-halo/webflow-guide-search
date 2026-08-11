@@ -131,19 +131,16 @@ document.addEventListener('DOMContentLoaded', () => {
         results.style.display = 'block';
         results.innerHTML = '';
 
-        if (!items.length) {
+        const availableFaqListIds = getAvailableFaqIds();
+
+        const validatedGuides = items.filter(guide =>
+            guide.faqlists?.some(faq => availableFaqListIds.has(String(faq.id))) || guide.id == 2384
+        );
+
+        if (!validatedGuides.length) {
             results.innerHTML = '<div>No guides found.</div>';
             return;
         }
-
-        const availableFaqListIds = getAvailableFaqIds();
-        console.log("Available FAQs:", availableFaqListIds);
-
-        const validatedGuides = items.filter(guide =>
-            guide.faqlists?.some(faq =>
-                availableFaqListIds.has(String(faq.id))
-            )
-        );
 
         validatedGuides.forEach((item) => {
             const outerDiv = document.createElement('div');
