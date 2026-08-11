@@ -137,11 +137,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const availableFaqListIds = getAvailableFaqIds();
-        const validatedGuides = items.filter(guide => {
-            guide.faqlists?.some(faq => {
+        console.log("Available FAQs:", availableFaqListIds);
+
+        const validatedGuides = items.filter(guide =>
+            guide.faqlists?.some(faq =>
                 availableFaqListIds.has(String(faq.id))
-            });
-        });
+            )
+        );
 
         validatedGuides.forEach((item) => {
             const outerDiv = document.createElement('div');
