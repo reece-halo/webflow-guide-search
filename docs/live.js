@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         url.searchParams.set("search", query);
         url.searchParams.set("isportal", "true");
         url.searchParams.set("pageinate", "true");
-        url.searchParams.set("page_size", "10");
+        url.searchParams.set("page_size", "50");
         url.searchParams.set("page_no", "1");
         url.searchParams.set("includefaqlists", "true");
 
