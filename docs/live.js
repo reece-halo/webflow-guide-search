@@ -145,14 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
             )
         );
 
-        // This is to handle also being excluded from search because it is a stop word
-        if (query.startsWith("also")) {
-            validatedGuides.push({
-                id: 2384,
-                name: "ALSO Integration"
-            });
-        }
-
         validatedGuides.forEach((item) => {
             const outerDiv = document.createElement('div');
             outerDiv.className = 'guide-search-results w-dyn-item';
@@ -198,8 +190,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const data = await response.json();
+            let guides = data.articles || [];
 
-            renderResults(data.articles || []);
+            // This is to handle also being excluded from search because it is a stop word
+            if (query.startsWith("also")) {
+                guides.push({
+                    id: 2384,
+                    name: "ALSO Integration"
+                });
+            }
+
+            renderResults(guides);
         } catch (error) {
             if (error.name === 'AbortError') return;
 
