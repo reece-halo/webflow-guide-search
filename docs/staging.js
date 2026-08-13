@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         );
 
         if (!validatedGuides.length) {
-            results.innerHTML = '<div>No guides found.</div>';
+            showStatus('No guides found.');
             return;
         }
 
