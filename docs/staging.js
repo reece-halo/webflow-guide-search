@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showLoading() {
         tree.style.display = 'none';
-        results.style.display = 'block';
+        results.style.display = 'none';
         statusText.textContent = 'Searching...';
         resultsText.textContent = '';
     }
