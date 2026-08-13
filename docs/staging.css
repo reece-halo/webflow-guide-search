@@ -1,0 +1,15 @@
+/* No open/close animation, anywhere */
+.guides-sidebar .faq-l1-body,
+.guides-sidebar .fs_accordion-2_content {
+    transition: none !important;
+}
+
+/* Sub-levels (these already behave): show full contents when open */
+.guides-sidebar .fs_accordion-2_item:has(> .fs_accordion-2_header[aria-expanded='true'])>.fs_accordion-2_content,
+.guides-sidebar .fs_accordion-2_item.is-active-accordion>.fs_accordion-2_content,
+.guides-sidebar .fs_accordion-2_content.is-active-accordion {
+    max-height: none !important;
+    overflow: visible !important;
+    /* If a sub-level still clips, its closed state uses display:none —
+       uncomment (use flex/grid if needed): display: block !important; */
+}
