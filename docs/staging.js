@@ -150,6 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        statusText.textContent = '';
         resultsText.textContent = `${validatedGuides.length} results`;
 
         validatedGuides.forEach((item) => {
