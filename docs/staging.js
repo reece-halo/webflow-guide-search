@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentRequest;
 
     function showTree() {
-        parent.innerHTML = '';
+        results.innerHTML = '';
         parent.style.display = 'none';
         tree.style.display = 'block';
     }
@@ -135,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderResults(items) {
         tree.style.display = 'none';
+        parent.style.display = 'block';
         results.style.display = 'block';
         results.innerHTML = '';
 
