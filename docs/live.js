@@ -142,6 +142,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Guides search header
+        const headerDiv = document.createElement('div');
+        headerDiv.textContent = `${items.length} results`;
+        headerDiv.className = 'results=header';
+        headerDiv.style = 'text-align: right';
+        results.appendChild(headerDiv);
+
         validatedGuides.forEach((item) => {
             const outerDiv = document.createElement('div');
             outerDiv.className = 'guide-search-results w-dyn-item';
