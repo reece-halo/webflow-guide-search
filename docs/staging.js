@@ -100,9 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
 // API guide search
 document.addEventListener('DOMContentLoaded', () => {
     const input = document.querySelector('#guides-search');
-    const resultsHeader = document.querySelector('.guides-search-results-header');
+    const header = document.querySelector('.guides-search-results-header');
     const results = document.querySelector('.guides-search-results');
     const tree = document.querySelector('.guides-tree');
+
+    const statusText = header.querySelector('.status');
+    const resultsText = header.querySelector('.results');
 
     if (!input || !results || !tree) return;
 
@@ -118,13 +121,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function showLoading() {
         tree.style.display = 'none';
         results.style.display = 'block';
-        results.innerHTML = '<div>Searching...</div>';
+        statusText.textContent = 'Searching...';
     }
 
     function showError() {
         tree.style.display = 'none';
         results.style.display = 'block';
-        results.innerHTML = '<div>Unable to search guides.</div>';
+        statusText.textContent = 'Unable to search guides.';
     }
 
     function renderResults(items) {
@@ -143,12 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Guides search header
-        // const headerDiv = document.createElement('div');
-        // headerDiv.textContent = `${items.length} results`;
-        // headerDiv.className = 'results-header';
-        // headerDiv.style = 'text-align: right';
-        // results.appendChild(headerDiv);
+        resultsText.textContent = `${validatedGuides.length} results`;
 
         validatedGuides.forEach((item) => {
             const outerDiv = document.createElement('div');
