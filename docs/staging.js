@@ -119,17 +119,10 @@ document.addEventListener('DOMContentLoaded', () => {
         tree.style.display = 'block';
     }
 
-    function showLoading() {
+    function showStatus(message) {
         tree.style.display = 'none';
         results.style.display = 'none';
-        statusText.textContent = 'Searching...';
-        resultsText.textContent = '';
-    }
-
-    function showError() {
-        tree.style.display = 'none';
-        results.style.display = 'block';
-        statusText.textContent = 'Unable to search guides.';
+        statusText.textContent = message;
         resultsText.textContent = '';
     }
 
@@ -175,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function searchGuides(query) {
         currentRequest?.abort();
         currentRequest = new AbortController();
-        showLoading();
+        showStatus('Searching...');
 
         const url = new URL("/api/kbarticle", "https://halo.haloservicedesk.com");
         url.searchParams.set("search", query);
@@ -213,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (error.name === 'AbortError') return;
 
             console.error('[Guide Search]', error);
-            showError();
+            showStatus('Unable to search guides.');
         }
     }
 
