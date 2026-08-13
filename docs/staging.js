@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const header = document.querySelector('.guides-search-results-header');
     const results = document.querySelector('.guides-search-results');
     const tree = document.querySelector('.guides-tree');
+    const parent = document.querySelector('.guides-search-results-outer');
 
     const statusText = header.querySelector('.status');
     const resultsText = header.querySelector('.results');
@@ -113,8 +114,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentRequest;
 
     function showTree() {
-        results.innerHTML = '';
-        results.style.display = 'none';
+        parent.innerHTML = '';
+        parent.style.display = 'none';
         tree.style.display = 'block';
     }
 
@@ -122,12 +123,14 @@ document.addEventListener('DOMContentLoaded', () => {
         tree.style.display = 'none';
         results.style.display = 'block';
         statusText.textContent = 'Searching...';
+        resultsText.textContent = '';
     }
 
     function showError() {
         tree.style.display = 'none';
         results.style.display = 'block';
         statusText.textContent = 'Unable to search guides.';
+        resultsText.textContent = '';
     }
 
     function renderResults(items) {
